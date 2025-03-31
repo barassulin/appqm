@@ -61,10 +61,10 @@ public class AppUsageMonitor {
         }
 
         long currentTime = System.currentTimeMillis();
-        long oneHourAgo = currentTime - 1000 * 3600; // Check last 1 hour
+        long SecondsAgo = currentTime - 10000; // Check last 1 seconds
 
         List<UsageStats> usageStatsList = usageStatsManager.queryUsageStats(
-                UsageStatsManager.INTERVAL_DAILY, oneHourAgo, currentTime);
+                UsageStatsManager.INTERVAL_DAILY, SecondsAgo, currentTime);
 
         if (usageStatsList == null || usageStatsList.isEmpty()) {
             Toast.makeText(context, "No usage stats available.", Toast.LENGTH_SHORT).show();

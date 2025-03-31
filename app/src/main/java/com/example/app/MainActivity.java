@@ -11,11 +11,27 @@ import android.view.WindowManager;
 import android.graphics.PixelFormat;
 import android.view.View;
 import android.view.LayoutInflater;
+import io.socket.emitter.Emitter;
+import org.json.JSONObject;
+import org.json.JSONException;
 import android.content.pm.PackageManager;
 import android.content.pm.ApplicationInfo;
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
+import org.json.JSONObject;
+import org.json.JSONException;
+import java.net.URISyntaxException;
+import android.util.Log;
 import android.util.Log;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import java.net.URISyntaxException;
+
+
+
 
 public class MainActivity extends AppCompatActivity {
     private TextView appUsageTextView;
@@ -25,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int CODE_DRAW_OVER_OTHER_APP_PERMISSION = 2084;
     private View floatingView;
     private WindowManager windowManager;
+    private Socket mSocket;
 
     private ActivityResultLauncher<Intent> overlayPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -55,6 +72,31 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize app usage monitor
         appUsageMonitor = new AppUsageMonitor(this);
+        try {
+            mSocket = IO.socket("http://10.0.2.2:8080");
+        } catch (URISyntaxException e) {
+            Log.e("SocketIO", "Failed", e);
+            e.printStackTrace();
+        }
+
+
+
+        try {
+            mSocket.on("new message", onNewMessage);
+            Log.d("SocketIO", "Listener for 'new message' added successfully.");
+        } catch (Exception e) {
+            Log.e("SocketIO", "Error adding 'new message' listener", e);
+        }
+
+        try {
+            mSocket.connect();
+            Log.d("SocketIO", "Socket connection initiated.");
+        } catch (Exception e) {
+            Log.e("SocketIO", "Error connecting to the server", e);
+        }
+
+        attemptSend("msg");
+
 
         // Runnable task to update the TextView every 3 seconds
         updateTask = new Runnable() {
@@ -66,9 +108,14 @@ public class MainActivity extends AppCompatActivity {
                     if (appName.equalsIgnoreCase("chrome")) {
                         showFloatingWindow();
                     }
-                    appUsageTextView.setText(recentApps);
+                    else if (floatingView != null && windowManager != null) {
+                            windowManager.removeView(floatingView);
+                            floatingView = null;
+                    }
+                    appUsageTextView.setText(appName);
                 }
                 handler.postDelayed(this, 3000);
+
             }
         };
 
@@ -110,9 +157,44 @@ public class MainActivity extends AppCompatActivity {
         return myArray[myArray.length - 1];
     }
 
+    private Emitter.Listener onNewMessage = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    JSONObject data = (JSONObject) args[0];
+                    String message;
+                    try {
+                        message = data.getString("message");
+                        Log.d("SocketIO", "msg:" + message);
+                        System.out.println(message);
+
+                    } catch (JSONException e) {
+                        Log.e("SocketIO", "Failed to parse message", e);
+                        System.out.println("fail");
+                        return;
+                    }
+
+                }
+            });
+        }
+    };
+
+    private void attemptSend(String message) {
+        if (mSocket.connected()) {
+            mSocket.emit("new message", message);  // Send message if connected
+        } else {
+            Log.e("SocketIO", "Socket is not connected. Message not sent.");
+        }
+    }
+
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mSocket.disconnect();
+        mSocket.off("new message", onNewMessage);
         handler.removeCallbacks(updateTask);
     }
 }

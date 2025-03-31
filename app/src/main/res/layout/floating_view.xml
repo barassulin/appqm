@@ -10,7 +10,7 @@
         android:id="@+id/floatingText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Floating Window"
+        android:text="app is not approved"
         android:textSize="40sp"
         android:textColor="#FFFFFF" />
 

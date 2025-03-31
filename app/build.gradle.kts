@@ -17,6 +17,9 @@ android {
     }
 
     buildTypes {
+        create("customDebugType") {
+            isDebuggable = true
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -41,4 +44,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    implementation("io.socket:socket.io-client:2.1.2") {
+        exclude(group = "org.json", module = "json")
+    }
 }
