@@ -52,7 +52,45 @@ public class MainActivity extends AppCompatActivity {
                             Log.e("Overlay", "Permission denied");
                         }
                     });
+    public Socket create_socket(){
+        Socket socket;
+        try {
+            socket = IO.socket("http://10.0.2.2:20004");
+        } catch (URISyntaxException e) {
+            Log.e("SocketIO", "Failed", e);
+            e.printStackTrace();
+            socket = null;
+        }
+        return socket;
+    }
 
+    public void connect(Socket socket){
+        try {
+            socket.connect();
+            Log.d("SocketIO", "Socket connection initiated.");
+        } catch (Exception e) {
+            Log.e("SocketIO", "Error connecting to the server", e);
+        }
+    }
+
+    public void recv(Socket socket){
+        try {
+            socket.on("new message", onNewMessage);
+            Log.d("SocketIO", "Listener for 'new message' added successfully.");
+        } catch (Exception e) {
+            Log.e("SocketIO", "Error adding 'new message' listener", e);
+        }
+    }
+
+
+    public void disconnect(Socket socket) {
+        try {
+            socket.disconnect();
+            Log.d("SocketIO", "Socket disconnection initiated.");
+        } catch (Exception e) {
+            Log.e("SocketIO", "Error disconnecting to the server", e);
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,31 +110,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize app usage monitor
         appUsageMonitor = new AppUsageMonitor(this);
-        try {
-            mSocket = IO.socket("http://10.0.2.2:20004");
-        } catch (URISyntaxException e) {
-            Log.e("SocketIO", "Failed", e);
-            e.printStackTrace();
-        }
 
-
-
-        try {
-            mSocket.on("new message", onNewMessage);
-            Log.d("SocketIO", "Listener for 'new message' added successfully.");
-        } catch (Exception e) {
-            Log.e("SocketIO", "Error adding 'new message' listener", e);
-        }
-
-        try {
-            mSocket.connect();
-            Log.d("SocketIO", "Socket connection initiated.");
-        } catch (Exception e) {
-            Log.e("SocketIO", "Error connecting to the server", e);
-        }
-
-        attemptSend("msg");
-
+        mSocket = create_socket();
 
         // Runnable task to update the TextView every 3 seconds
         updateTask = new Runnable() {
@@ -105,6 +120,13 @@ public class MainActivity extends AppCompatActivity {
                 String recentApps = appUsageMonitor.getRecentApps();
                 if (recentApps != null && !recentApps.isEmpty()) {
                     String appName = getAppNameFromPackage(recentApps);
+
+                    if (mSocket != null)
+                    {
+                        connect(mSocket);
+                        attemptSend(appName, mSocket);
+                        recv(mSocket);
+                    }
                     if (appName.equalsIgnoreCase("chrome")) {
                         showFloatingWindow();
                     }
@@ -181,9 +203,9 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private void attemptSend(String message) {
-        if (mSocket.connected()) {
-            mSocket.emit("new message", message);  // Send message if connected
+    private void attemptSend(String message, Socket socket) {
+        if (socket.connected()) {
+            socket.emit("new message", message);  // Send message if connected
         } else {
             Log.e("SocketIO", "Socket is not connected. Message not sent.");
         }
