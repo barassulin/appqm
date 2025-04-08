@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
             Log.e("SocketIO", "Error connecting to the server", e);
         }
     }
-
     public void recv(Socket socket){
         try {
             socket.on("new message", onNewMessage);
