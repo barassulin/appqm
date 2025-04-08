@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         // Initialize app usage monitor
         appUsageMonitor = new AppUsageMonitor(this);
         try {
-            mSocket = IO.socket("http://10.0.2.2:8080");
+            mSocket = IO.socket("http://10.0.2.2:20004");
         } catch (URISyntaxException e) {
             Log.e("SocketIO", "Failed", e);
             e.printStackTrace();
