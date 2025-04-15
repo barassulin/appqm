@@ -48,7 +48,7 @@ public class AppUsageMonitor {
             // Log to console
             Log.d("AppUsageMonitor", "Most recently used app: " + appName + ", Last time used: " + lastUsed);
 
-            return "Last used app: " + appName;  // Return the app name as a string
+            return appName;  // Return the app name as a string
         }
 
         return "No recent apps available";

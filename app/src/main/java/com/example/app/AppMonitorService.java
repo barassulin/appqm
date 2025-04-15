@@ -93,6 +93,6 @@ public class AppMonitorService extends Service {
 
         // Show the notification
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.notify(1, notification);  // Notification ID is 1
+        startForeground(1, notification);
     }
 }
