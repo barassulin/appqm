@@ -58,6 +58,7 @@ public class AppService extends Service {
         appUsageMonitor = new AppUsageMonitor(this);
         mSocket = create_socket();
         connect(mSocket);
+        identify(mSocket);
         recv(mSocket);
         startLoop();
     }
@@ -130,6 +131,11 @@ public class AppService extends Service {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void identify(Socket socket) {
+        socket.emit("identify", "name pass");
+
     }
 
     public void recv(Socket socket) {
