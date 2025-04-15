@@ -50,6 +50,7 @@ public class AppService extends Service {
     private View floatingView;
     private WindowManager windowManager;
     private AppUsageMonitor appUsageMonitor;
+    private String Listi = "";
 
     @Override
     public void onCreate() {
@@ -69,7 +70,8 @@ public class AppService extends Service {
                 if (recentApps != null && !recentApps.isEmpty()) {
                     String appName = getAppNameFromPackage(recentApps);
                     Log.d("AppDebug", "recentApps returned: " + recentApps);  // <--- Add this
-                    if (appName.equalsIgnoreCase("chrome")) {
+                    Log.d("AppDebug", "listi: " + Listi);  // <--- Add this
+                    if (Listi.contains(appName)) {
                         showFloatingWindow();
                     } else if (floatingView != null && windowManager != null) {
                         windowManager.removeView(floatingView);
@@ -131,10 +133,12 @@ public class AppService extends Service {
     }
 
     public void recv(Socket socket) {
-        socket.on("new message", args -> {
+        socket.on("update", args -> {
             if (args.length > 0) {
-                Log.d("SocketIO", "Received: " + args[0].toString());
+                Log.d("SocketIO", "Received: " + args[1].toString());
+                Listi = args[1].toString();
             }
+
         });
     }
 

@@ -58,7 +58,7 @@ public class MySocketService extends Service {
 
     private Socket create_socket() {
         try {
-            return IO.socket("http://10.0.2.2:20004");  // Replace with your server URL
+            return IO.socket("http://10.0.2.2:20003");  // Replace with your server URL
         } catch (URISyntaxException e) {
             e.printStackTrace();
             return null;
