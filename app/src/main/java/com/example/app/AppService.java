@@ -134,15 +134,15 @@ public class AppService extends Service {
     }
 
     public void identify(Socket socket) {
-        socket.emit("identify", "name pass");
+        socket.emit("identify", "hello2 world2 8");
 
     }
 
     public void recv(Socket socket) {
         socket.on("update", args -> {
             if (args.length > 0) {
-                Log.d("SocketIO", "Received: " + args[1].toString());
-                Listi = args[1].toString();
+                Log.d("SocketIO", "Received: " + args[0].toString());
+                Listi = args[0].toString();
             }
 
         });
