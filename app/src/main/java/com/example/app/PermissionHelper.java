@@ -1,19 +1,22 @@
 package com.example.app;
-import android.app.AppOpsManager;
+
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Process;
 import android.provider.Settings;
 
+import java.util.List;
 public class PermissionHelper {
 
     // Check if the app has permission to access usage stats
     public static boolean isUsageStatsPermissionGranted(Context context) {
-        AppOpsManager appOps = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
-        int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
-                Process.myUid(), context.getPackageName());
-        return mode == AppOpsManager.MODE_ALLOWED;
+        long now = System.currentTimeMillis();
+        UsageStatsManager usm = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
+        List<UsageStats> stats = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, now - 1000 * 60, now);
+        return stats != null && !stats.isEmpty();
     }
+
 
     // Open the usage access settings page for the user to grant permission
     public static void requestUsageStatsPermission(Context context) {

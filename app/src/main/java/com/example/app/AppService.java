@@ -1,47 +1,23 @@
 package com.example.app;
-import android.os.Bundle;
 import android.os.Handler;
-import android.widget.TextView;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Build;
 import android.content.Intent;
-import android.net.Uri;
 import android.provider.Settings;
 import android.view.WindowManager;
 import android.graphics.PixelFormat;
 import android.view.View;
 import android.view.LayoutInflater;
-import io.socket.emitter.Emitter;
-import org.json.JSONObject;
-import org.json.JSONException;
-import android.content.pm.PackageManager;
-import android.content.pm.ApplicationInfo;
 import io.socket.client.IO;
 import io.socket.client.Socket;
-import io.socket.emitter.Emitter;
-import org.json.JSONObject;
-import org.json.JSONException;
 import java.net.URISyntaxException;
 import android.util.Log;
-import android.util.Log;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.app.NotificationCompat;
-
-import io.socket.client.IO;
-import io.socket.client.Socket;
-import java.net.URISyntaxException;
-
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
 import android.os.IBinder;
-import android.app.usage.UsageStats;
-import android.app.usage.UsageStatsManager;
+
 
 public class AppService extends Service {
     private Handler handler = new Handler();
@@ -134,7 +110,7 @@ public class AppService extends Service {
     }
 
     public void identify(Socket socket) {
-        socket.emit("identify", "hello2 world2 8");
+        socket.emit("identify", "hello world 33");
 
     }
 

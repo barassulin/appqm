@@ -1,4 +1,10 @@
+
+
+
+
+
 package com.example.app;
+
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -14,6 +20,8 @@ import android.app.usage.UsageStatsManager;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
+
+
 
 public class AppMonitorService extends Service {
 
@@ -87,7 +95,7 @@ public class AppMonitorService extends Service {
             notification = new Notification.Builder(this, CHANNEL_ID)
                     .setContentTitle("App Opened")
                     .setContentText("The most recent app opened is: " + recentApp)
-                    .setSmallIcon(android.R.drawable.ic_dialog_info)
+                    .setSmallIcon(R.drawable.ic_launcher_background)
                     .build();
         }
 
