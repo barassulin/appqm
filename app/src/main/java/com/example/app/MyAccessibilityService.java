@@ -14,7 +14,7 @@ public class MyAccessibilityService extends AccessibilityService {
             // Get the package name of the app that is currently in the foreground
             String packageName = event.getPackageName().toString();
             // Log the package name of the app that has just been launched or switched to
-            Log.d("AppLaunch", "Launched or switched to app: " + packageName);
+            Log.d("AppLaunchi", "Launched or switched to app: " + packageName);
         }
     }
 
@@ -22,6 +22,6 @@ public class MyAccessibilityService extends AccessibilityService {
     @Override
     public void onInterrupt() {
         // Handle interruption if needed (e.g., cleanup or release resources)
-        Log.d("AppLaunch", "AccessibilityService interrupted.");
+        Log.d("AppLaunchi", "AccessibilityService interrupted.");
     }
 }
